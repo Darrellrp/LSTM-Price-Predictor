@@ -27,7 +27,7 @@ FETCH_COLLECTION = False
 # Pre processing
 TRAIN_TEST_SPLIT = 0.8
 
-# Autocoder
+# Autocoder TODO: Adjust size to input & output dimensions
 HIDDEN_SIZE = 10
 CODE_SIZE = 6
 
@@ -68,7 +68,7 @@ market_items = [m.replace('\n', '') for m in market_items]
 data = None
 targets = None
 
-# Forex Data source
+# Forex Data source TODO: Integrate Forex
 # fx = ForeignExchange(key=AV_API_KEY, output_format='pandas')
 # mmi = fx.get_currency_exchange_daily(from_symbol='EUR', to_symbol='USD', outputsize='full')
 
@@ -88,7 +88,7 @@ if (not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv'))
 			market_item, meta_data = ts.get_daily(market_item_name, outputsize='full')
 
 			print(market_item_name)
-			print('Data size: {}'.format(market_item.shape[0]))
+			print('Record size: {}'.format(market_item.shape[0]))
 			print('')
 
 			rename_columns = {'1. open': 'open', '2. high': 'high', '3. low': ' low',
@@ -137,13 +137,11 @@ if (not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv'))
 			market_item_data = scaler.transform(market_item_data.values)
 
 			# Store cleaned financial data
-			# market_item_data.to_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'), header=False)
-			# market_item_targets.to_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'), header=False)
 			np.savetxt(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'), market_item_data, delimiter=',')
 			np.savetxt(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'), market_item_targets, delimiter=',')
 
 		else:
-			# Read cleaned financial data TODO: np.gentxt()
+			# Read cleaned financial data
 			market_item_data = pd.read_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'), header=None).values
 			market_item_targets = pd.read_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'), header=None).values
 
@@ -151,6 +149,7 @@ if (not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv'))
 			data = market_item_data
 			targets = market_item_targets
 		else:
+			# TODO: Concatenate columns grouped by timestamp
 			data = np.concatenate((data, market_item_data))
 			targets = np.concatenate((targets, market_item_targets))
 
@@ -194,6 +193,9 @@ code_3 = Dense(CODE_SIZE, activation='relu')(hidden_3)
 hidden_4 = Dense(HIDDEN_SIZE, activation='relu')(code_3)
 code_4 = Dense(CODE_SIZE, activation='relu')(hidden_4)
 hidden_5 = Dense(HIDDEN_SIZE, activation='relu')(code_4)
+
+# TODO: Append LSTM
+
 
 # Output layer (Reconstructed image, siz=748)
 output_img = Dense(input_size, activation='sigmoid')(hidden_5)

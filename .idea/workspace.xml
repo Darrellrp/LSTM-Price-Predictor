@@ -5,15 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/dictionaries/darrellpoleon.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/darrellpoleon.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/AAPL_daily_full_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/AAPL_daily_full_targets.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/GOOGL_daily_full_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/GOOGL_daily_full_targets.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/MSFT_daily_full_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/MSFT_daily_full_targets.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/data_collection.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/targets_collection.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/market-items.txt" beforeDir="false" afterPath="$PROJECT_DIR$/market-items.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,7 +15,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/WSAEs_LSTM_Price_Predictor$Python_Interpreter.coverage" NAME="Python Interpreter Coverage Results" MODIFIED="1566031141717" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/WSAEs_LSTM_Price_Predictor$Python_Interpreter.coverage" NAME="Python Interpreter Coverage Results" MODIFIED="1566050124363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/WSAEs_LSTM_Price_Predictor$Python_interpreter.coverage" NAME="Python interpreter Coverage Results" MODIFIED="1565978336375" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="DatabaseView">
@@ -110,26 +103,27 @@
     <session id="-182514270">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="6" />
+          <entry key="project.closed" value="7" />
           <entry key="project.open.time.0" value="2" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.open.time.7" value="2" />
+          <entry key="project.open.time.7" value="3" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="6" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="csv" value="50" />
+          <entry key="csv" value="56" />
           <entry key="gitignore" value="1" />
           <entry key="py" value="18" />
-          <entry key="txt" value="4" />
+          <entry key="sh" value="1" />
+          <entry key="txt" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CSV" value="50" />
-          <entry key="PLAIN_TEXT" value="5" />
+          <entry key="CSV" value="56" />
+          <entry key="PLAIN_TEXT" value="7" />
           <entry key="Python" value="18" />
         </counts>
       </usages-collector>
@@ -137,29 +131,39 @@
         <counts>
           <entry key="csv" value="5" />
           <entry key="gitignore" value="7" />
-          <entry key="py" value="5396" />
+          <entry key="py" value="5618" />
+          <entry key="sh" value="42" />
           <entry key="txt" value="56" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CSV" value="5" />
-          <entry key="PLAIN_TEXT" value="63" />
-          <entry key="Python" value="5396" />
+          <entry key="PLAIN_TEXT" value="105" />
+          <entry key="Python" value="5618" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/__main__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="154" column="68" selection-start-line="154" selection-start-column="68" selection-end-line="154" selection-end-column="68" />
+            <state relative-caret-position="181">
+              <caret line="224" column="36" selection-start-line="224" selection-start-column="36" selection-end-line="224" selection-end-column="36" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/start_tensorboard.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="46">
+              <caret line="2" column="21" selection-start-line="2" selection-start-column="21" selection-end-line="2" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -195,8 +199,8 @@
       <find>market_item</find>
       <find>genfromtxt</find>
       <find>file_path_clean_total</find>
-      <find>FILE_PATH_TF_LOGS</find>
       <find>data</find>
+      <find>FILE_PATH_TF_LOGS</find>
     </findStrings>
     <replaceStrings>
       <replace>autoencoder</replace>
@@ -219,6 +223,8 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/market-items.txt" />
         <option value="$PROJECT_DIR$/__main__.py" />
+        <option value="$PROJECT_DIR$/start_tensorflow.sh" />
+        <option value="$PROJECT_DIR$/start_tensorboard.sh" />
       </list>
     </option>
   </component>
@@ -257,7 +263,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -280,6 +285,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -392,21 +398,21 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27753934" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2811159" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.55293274" visible="true" weight="0.32923833" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6051502" weight="0.3992629" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.5522174" weight="0.32923833" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6008584" weight="0.3992629" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" weight="0.32923833" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.44706723" side_tool="true" visible="true" weight="0.32923833" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49713877" weight="0.32923833" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5064378" side_tool="true" visible="true" weight="0.32923833" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49356222" visible="true" weight="0.32923833" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="13" sideWeight="0.49928468" weight="0.32923833" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -429,13 +435,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__main__.py</url>
-          <line>229</line>
+          <line>230</line>
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__main__.py</url>
-          <line>101</line>
-          <option name="timeStamp" value="72" />
+          <line>207</line>
+          <option name="timeStamp" value="76" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -511,25 +517,6 @@
     <entry file="file://$PROJECT_DIR$/data/alpha-vantage/clean/IMB_daily_full_data.csv">
       <provider selected="true" editor-type-id="csv-text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/alpha-vantage/clean/data_collection.csv">
-      <provider selected="true" editor-type-id="csv-text-editor">
-        <state relative-caret-position="457">
-          <caret line="117" column="124" lean-forward="true" selection-start-line="117" selection-start-column="100" selection-end-line="117" selection-end-column="124" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/alpha-vantage/clean/AAPL_daily_full_targets.csv">
-      <provider selected="true" editor-type-id="csv-text-editor">
-        <state relative-caret-position="-1315" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/alpha-vantage/clean/AAPL_daily_full_data.csv">
-      <provider selected="true" editor-type-id="csv-text-editor">
-        <state relative-caret-position="138">
-          <caret line="6" column="36" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/alpha-vantage/clean/GOOGL_daily_full_data.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="115">
@@ -547,20 +534,47 @@
     <entry file="file://$PROJECT_DIR$/data/alpha-vantage/raw/AAPL_daily_full.csv">
       <provider selected="true" editor-type-id="csv-text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/data/alpha-vantage/raw/AMZN_daily_full.csv">
+      <provider selected="true" editor-type-id="csv-text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/alpha-vantage/clean/AAPL_daily_full_data.csv">
+      <provider selected="true" editor-type-id="csv-text-editor">
+        <state relative-caret-position="138">
+          <caret line="6" column="36" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/alpha-vantage/clean/AAPL_daily_full_targets.csv">
+      <provider selected="true" editor-type-id="csv-text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/market-items.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="45" selection-start-column="45" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/alpha-vantage/clean/data_collection.csv">
+      <provider selected="true" editor-type-id="csv-text-editor">
+        <state relative-caret-position="419">
+          <caret line="117" column="124" selection-start-line="117" selection-start-column="100" selection-end-line="117" selection-end-column="124" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/__main__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="154" column="68" selection-start-line="154" selection-start-column="68" selection-end-line="154" selection-end-column="68" />
+        <state relative-caret-position="181">
+          <caret line="224" column="36" selection-start-line="224" selection-start-column="36" selection-end-line="224" selection-end-column="36" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/market-items.txt">
+    <entry file="file://$PROJECT_DIR$/start_tensorboard.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="45" selection-start-column="45" selection-end-column="45" />
+        <state relative-caret-position="46">
+          <caret line="2" column="21" selection-start-line="2" selection-start-column="21" selection-end-line="2" selection-end-column="21" />
         </state>
       </provider>
     </entry>

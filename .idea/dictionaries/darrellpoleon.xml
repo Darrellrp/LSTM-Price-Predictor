@@ -11,6 +11,8 @@
       <w>forex</w>
       <w>gbpusd</w>
       <w>intraday</w>
+      <w>logdir</w>
+      <w>lstm</w>
       <w>mape</w>
       <w>mnist</w>
       <w>relu</w>
