@@ -14,6 +14,7 @@ from keras.callbacks import TensorBoard
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from alpha_vantage.timeseries import TimeSeries
+from alpha_vantage.foreignexchange import ForeignExchange
 
 # Data Source
 AV_API_KEY = 'OHL1UQBAF94QK9FH'
@@ -21,6 +22,7 @@ DIR_RAW_DATA = 'data/alpha-vantage/raw'
 DIR_RAW_CLEAN = 'data/alpha-vantage/clean'
 FILE_PATH_RAW_DATA = DIR_RAW_DATA + '/{}_daily_full.csv'
 FILE_PATH_CLEAN_DATA = DIR_RAW_CLEAN + '/{}_daily_full_{}.csv'
+FETCH_COLLECTION = False
 
 # Pre processing
 TRAIN_TEST_SPLIT = 0.8
@@ -66,9 +68,13 @@ market_items = [m.replace('\n', '') for m in market_items]
 data = None
 targets = None
 
+# Forex Data source
+# fx = ForeignExchange(key=AV_API_KEY, output_format='pandas')
+# mmi = fx.get_currency_exchange_daily(from_symbol='EUR', to_symbol='USD', outputsize='full')
+
 # if clean data or targets doesn't exist, clean and store again
-if not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv')) \
-		or not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'targets_collection.csv')):
+if (not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv'))
+		or not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'targets_collection.csv'))) or FETCH_COLLECTION:
 
 	# ***************************************     Retrieve financial data     ***************************************
 	for market_item_name in market_items:
@@ -93,11 +99,12 @@ if not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv')) \
 			market_item.index.name = 'timestamp'
 
 			# Store Market item data
-			market_item.to_csv(file_path_raw, header=True, float_format='%.3f')
+			market_item.to_csv(file_path_raw, header=True)
 
 		else:
 			print('Loading Daily Time Series -csv (Alpha Vantage) - {}...'.format(market_item_name))
 			market_item = pd.read_csv(file_path_raw, parse_dates=['timestamp'])
+			market_item.drop('timestamp', axis=1, inplace=True)
 
 		market_item['close'].plot()
 		plt.title(market_item_name)
@@ -111,33 +118,34 @@ if not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv')) \
 		# if clean data or targets doesn't exist, clean and store again
 		if not os.path.exists(file_path_clean_data) or not os.path.exists(file_path_clean_targets):
 			print('Pre-processing {}...'.format(market_item_name))
-
-			# Remove last row, Drop timestamp column
-			market_item_data = market_item.drop(market_item.tail(1).index).drop('timestamp', axis=1).to_numpy()
-
-			# Select close columns, Drop First row (Next days close price)
-			market_item_targets = market_item['close'].drop(market_item.head(1).index).to_numpy()
-
 			print('')
 
-			scaler = MinMaxScaler(feature_range=(0, 1))
-			scaler = scaler.fit(market_item_data)
+			# Remove last row, Drop timestamp column
+			market_item_data = market_item.drop(market_item.tail(1).index)
 
-			# Normalize financial data
-			market_item_data = scaler.transform(market_item_data)
+			# Select close columns, Drop First row (Next days close price)
+			market_item_targets = market_item['close'].drop(market_item.head(1).index)
 
 			# Convert to float32
 			market_item_data = market_item_data.astype('float32')
 			market_item_targets = market_item_targets.astype('float32')
 
+			scaler = MinMaxScaler(feature_range=(0, 1))
+			scaler = scaler.fit(market_item_data.values)
+
+			# Normalize financial data
+			market_item_data = scaler.transform(market_item_data.values)
+
 			# Store cleaned financial data
+			# market_item_data.to_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'), header=False)
+			# market_item_targets.to_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'), header=False)
 			np.savetxt(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'), market_item_data, delimiter=',')
 			np.savetxt(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'), market_item_targets, delimiter=',')
 
 		else:
-			# Read cleaned financial data
-			market_item_data = pd.read_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'))
-			market_item_targets = pd.read_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'))
+			# Read cleaned financial data TODO: np.gentxt()
+			market_item_data = pd.read_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'), header=None).values
+			market_item_targets = pd.read_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'), header=None).values
 
 		if data is None:
 			data = market_item_data
@@ -151,8 +159,8 @@ if not os.path.exists('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv')) \
 
 else:
 	print('Loading Collection -csv (Alpha Vantage)...')
-	data = pd.read_csv('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv')).values
-	targets = pd.read_csv('{}/{}'.format(DIR_RAW_CLEAN, 'targets_collection.csv')).values
+	data = pd.read_csv('{}/{}'.format(DIR_RAW_CLEAN, 'data_collection.csv'), header=None).values
+	targets = pd.read_csv('{}/{}'.format(DIR_RAW_CLEAN, 'targets_collection.csv'), header=None).values
 
 print('')
 
@@ -218,6 +226,6 @@ if PREDICT:
 		print('')
 
 		# Print actual label
-		print('The X test: {}'.format(x_test[rand_i]))
-		print('The reconstructed test: {}'.format(reconstructed[rand_i]))
+		print('Actual data: {}'.format(x_test[rand_i]))
+		print('Reconstructed data: {}'.format(reconstructed[rand_i]))
 
