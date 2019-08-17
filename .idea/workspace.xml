@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0777800a-8938-4914-9985-c8b29492c40f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/darrellpoleon.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/darrellpoleon.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/data_collection.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/alpha-vantage/clean/targets_collection.csv" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,7 +11,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/WSAEs_LSTM_Price_Predictor$Python_Interpreter.coverage" NAME="Python Interpreter Coverage Results" MODIFIED="1566050124363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/WSAEs_LSTM_Price_Predictor$Python_Interpreter.coverage" NAME="Python Interpreter Coverage Results" MODIFIED="1566061119932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/WSAEs_LSTM_Price_Predictor$Python_interpreter.coverage" NAME="Python interpreter Coverage Results" MODIFIED="1565978336375" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="DatabaseView">
@@ -115,7 +111,7 @@
         <counts>
           <entry key="csv" value="56" />
           <entry key="gitignore" value="1" />
-          <entry key="py" value="18" />
+          <entry key="py" value="21" />
           <entry key="sh" value="1" />
           <entry key="txt" value="5" />
         </counts>
@@ -124,14 +120,14 @@
         <counts>
           <entry key="CSV" value="56" />
           <entry key="PLAIN_TEXT" value="7" />
-          <entry key="Python" value="18" />
+          <entry key="Python" value="21" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="csv" value="5" />
           <entry key="gitignore" value="7" />
-          <entry key="py" value="5618" />
+          <entry key="py" value="5748" />
           <entry key="sh" value="42" />
           <entry key="txt" value="56" />
         </counts>
@@ -140,18 +136,18 @@
         <counts>
           <entry key="CSV" value="5" />
           <entry key="PLAIN_TEXT" value="105" />
-          <entry key="Python" value="5618" />
+          <entry key="Python" value="5748" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/__main__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="224" column="36" selection-start-line="224" selection-start-column="36" selection-end-line="224" selection-end-column="36" />
+            <state relative-caret-position="109">
+              <caret line="179" column="16" lean-forward="true" selection-start-line="179" selection-start-column="16" selection-end-line="179" selection-end-column="16" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -159,7 +155,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/start_tensorboard.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="46">
@@ -201,6 +197,8 @@
       <find>file_path_clean_total</find>
       <find>data</find>
       <find>FILE_PATH_TF_LOGS</find>
+      <find>output_img</find>
+      <find>input_size</find>
     </findStrings>
     <replaceStrings>
       <replace>autoencoder</replace>
@@ -209,6 +207,7 @@
       <replace>CODE_SIZE</replace>
       <replace>market_item</replace>
       <replace>market_item_name</replace>
+      <replace>output_autoemcoder</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -222,9 +221,9 @@
         <option value="$PROJECT_DIR$/data/alpha-vantage/clean/data_collection.csv" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/market-items.txt" />
-        <option value="$PROJECT_DIR$/__main__.py" />
         <option value="$PROJECT_DIR$/start_tensorflow.sh" />
         <option value="$PROJECT_DIR$/start_tensorboard.sh" />
+        <option value="$PROJECT_DIR$/__main__.py" />
       </list>
     </option>
   </component>
@@ -403,16 +402,16 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.5522174" weight="0.32923833" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6008584" weight="0.3992629" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.55150217" weight="0.32923833" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.6001431" visible="true" weight="0.3992629" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" weight="0.32923833" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5064378" side_tool="true" visible="true" weight="0.32923833" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49356222" visible="true" weight="0.32923833" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.39985693" side_tool="true" visible="true" weight="0.3992629" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49356222" weight="0.32923833" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="13" sideWeight="0.49928468" weight="0.32923833" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -435,13 +434,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__main__.py</url>
-          <line>230</line>
-          <option name="timeStamp" value="54" />
+          <line>211</line>
+          <option name="timeStamp" value="77" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__main__.py</url>
-          <line>207</line>
-          <option name="timeStamp" value="76" />
+          <line>201</line>
+          <option name="timeStamp" value="78" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -524,13 +523,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/codecs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="308" selection-start-line="308" selection-end-line="308" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/alpha-vantage/raw/AAPL_daily_full.csv">
       <provider selected="true" editor-type-id="csv-text-editor" />
     </entry>
@@ -561,20 +553,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/__main__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="224" column="36" selection-start-line="224" selection-start-column="36" selection-end-line="224" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/start_tensorboard.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="46">
           <caret line="2" column="21" selection-start-line="2" selection-start-column="21" selection-end-line="2" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="308" selection-start-line="308" selection-end-line="308" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/__main__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="109">
+          <caret line="179" column="16" lean-forward="true" selection-start-line="179" selection-start-column="16" selection-end-line="179" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

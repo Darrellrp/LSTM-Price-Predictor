@@ -8,7 +8,7 @@ import tensorflow as tf
 import pandas as pd
 import matplotlib.pyplot as plt
 from keras import optimizers
-from keras.layers import Dense, Input
+from keras.layers import Dense, Input, LSTM, TimeDistributed
 from keras.models import Sequential, Model
 from keras.callbacks import TensorBoard
 from sklearn.preprocessing import MinMaxScaler
@@ -175,10 +175,10 @@ input_size = x_train.shape[1]
 
 # ***************************************     Neural Network Architecture     ***************************************
 # Input layer (size=748)
-input_img = Input(shape=(input_size,))
+input_layer = Input(shape=(input_size,))
 
 # Autoencoder 1.
-hidden_1 = Dense(HIDDEN_SIZE, activation='relu')(input_img)
+hidden_1 = Dense(HIDDEN_SIZE, activation='relu')(input_layer)
 code_1 = Dense(CODE_SIZE, activation='relu')(hidden_1)
 
 # Autoencoder 2.
@@ -194,13 +194,20 @@ hidden_4 = Dense(HIDDEN_SIZE, activation='relu')(code_3)
 code_4 = Dense(CODE_SIZE, activation='relu')(hidden_4)
 hidden_5 = Dense(HIDDEN_SIZE, activation='relu')(code_4)
 
-# TODO: Append LSTM
-
 
 # Output layer (Reconstructed image, siz=748)
-output_img = Dense(input_size, activation='sigmoid')(hidden_5)
+output_autoencoder = TimeDistributed((Dense(input_size, activation='sigmoid')(hidden_5)))
 
-stacked_autoencoder = Model(input_img, output_img)
+# TODO: Append LSTM
+layer1 = LSTM(HIDDEN_SIZE, return_sequences=True)(output_autoencoder)
+layer2 = LSTM(HIDDEN_SIZE, return_sequences=True)(layer1)
+layer3 = LSTM(HIDDEN_SIZE, return_sequences=True)(layer2)
+layer4 = LSTM(HIDDEN_SIZE, return_sequences=True)(layer3)
+layer5 = LSTM(HIDDEN_SIZE, return_sequences=True)(layer4)
+
+output_lstm = Dense(1)(layer5)
+
+stacked_autoencoder = Model(input_layer, output_lstm)
 
 adam = optimizers.Adam(lr=LEARNING_RATE, beta_1=BETA_1, beta_2=BETA_2, epsilon=EPSILON, decay=DECAY, amsgrad=AMSGRAD)
 # optimizers: 'adadelta' | loss: 'mape', 'binary_crossentropy'
