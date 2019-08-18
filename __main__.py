@@ -8,7 +8,7 @@ import tensorflow as tf
 import pandas as pd
 import matplotlib.pyplot as plt
 from keras import optimizers
-from keras.layers import Dense, Input, LSTM, TimeDistributed
+from keras.layers import Dense, Input, LSTM, TimeDistributed, Dropout
 from keras.models import Sequential, Model
 from keras.callbacks import TensorBoard
 from sklearn.preprocessing import MinMaxScaler
@@ -25,19 +25,20 @@ FILE_PATH_CLEAN_DATA = DIR_RAW_CLEAN + '/{}_daily_full_{}.csv'
 FETCH_COLLECTION = False
 
 # Pre processing
-TRAIN_TEST_SPLIT = 0.8
+TRAIN_TEST_SPLIT = 0.99
+SAMPLE_SIZE = 2000
 
-# Autocoder TODO: Adjust size to input & output dimensions
-HIDDEN_SIZE = 10
-CODE_SIZE = 6
+# LSTM
+LSTM_HIDDEN_SIZE = 10
+LSTM_CODE_SIZE = 6
 
 # Training
-EPOCHS = 20
+EPOCHS = 10
 BATCH_SIZE = 32
 VERBOSE = 1
 
 # Optimization Neural Network
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.05
 BETA_1 = 0.9
 BETA_2 = 0.999
 EPSILON = None
@@ -61,6 +62,8 @@ NUMBER_SHOWN_OF_PREDICTIONS = 4
 
 # Read market items from text file
 market_items = open('market-items.txt').readline().split(', ')
+# Select active market items
+market_items = [i for i in market_items if '-' not in i]
 
 # Remove newline character from market items
 market_items = [m.replace('\n', '') for m in market_items]
@@ -163,6 +166,14 @@ else:
 
 print('')
 
+# Specify number of records
+if isinstance(SAMPLE_SIZE, int):
+	data = data[:SAMPLE_SIZE]
+	targets = targets[:SAMPLE_SIZE]
+
+print('Retrieve Daily Time Series -csv (Alpha Vantage) - {}'.format(market_items))
+print('')
+
 # Train Test Splits
 print('Generating Train Test split...')
 x_train, x_test, y_train, y_test = train_test_split(data, targets, test_size=0.2, random_state=42)
@@ -171,61 +182,57 @@ print('Number of rows train data: {}'.format(len(x_train)))
 print('Number of rows test data: {} '.format(len(x_test)))
 print('')
 
-input_size = x_train.shape[1]
+input_dim = x_train.shape[1]
+
+# Reshape 2D to 3D (samples, rows, columns)
+x_train = x_train.reshape(1, x_train.shape[0], x_train.shape[1])
+x_test = x_test.reshape(1,  x_test.shape[0], x_test.shape[1])
+y_train = y_train.reshape(1, y_train.shape[0], 1)
+y_test = y_test.reshape(1, y_test.shape[0], 1)
 
 # ***************************************     Neural Network Architecture     ***************************************
-# Input layer (size=748)
-input_layer = Input(shape=(input_size,))
+model = Sequential()
 
-# Autoencoder 1.
-hidden_1 = Dense(HIDDEN_SIZE, activation='relu')(input_layer)
-code_1 = Dense(CODE_SIZE, activation='relu')(hidden_1)
+# LSTM
+model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True, input_shape=(None, input_dim)))
+model.add((Dropout(0.2)))
 
-# Autoencoder 2.
-hidden_2 = Dense(HIDDEN_SIZE, activation='relu')(code_1)
-code_2 = Dense(CODE_SIZE, activation='relu')(hidden_2)
+model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True))
+model.add((Dropout(0.2)))
 
-# Autoencoder 3.
-hidden_3 = Dense(HIDDEN_SIZE, activation='relu')(code_2)
-code_3 = Dense(CODE_SIZE, activation='relu')(hidden_3)
+model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True))
+model.add((Dropout(0.2)))
 
-# Autoencoder 2.
-hidden_4 = Dense(HIDDEN_SIZE, activation='relu')(code_3)
-code_4 = Dense(CODE_SIZE, activation='relu')(hidden_4)
-hidden_5 = Dense(HIDDEN_SIZE, activation='relu')(code_4)
+model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True))
+model.add((Dropout(0.2)))
 
+model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True))
+model.add((Dropout(0.2)))
 
-# Output layer (Reconstructed image, siz=748)
-output_autoencoder = TimeDistributed((Dense(input_size, activation='sigmoid')(hidden_5)))
+# model.add(LSTM(LsSTM_HIDDEN_SIZE, return_sequences=True))
+model.add(LSTM(input_dim, return_sequences=True))
 
-# TODO: Append LSTM
-layer1 = LSTM(HIDDEN_SIZE, return_sequences=True)(output_autoencoder)
-layer2 = LSTM(HIDDEN_SIZE, return_sequences=True)(layer1)
-layer3 = LSTM(HIDDEN_SIZE, return_sequences=True)(layer2)
-layer4 = LSTM(HIDDEN_SIZE, return_sequences=True)(layer3)
-layer5 = LSTM(HIDDEN_SIZE, return_sequences=True)(layer4)
-
-output_lstm = Dense(1)(layer5)
-
-stacked_autoencoder = Model(input_layer, output_lstm)
+model.add(TimeDistributed((Dense(1, activation='relu'))))
 
 adam = optimizers.Adam(lr=LEARNING_RATE, beta_1=BETA_1, beta_2=BETA_2, epsilon=EPSILON, decay=DECAY, amsgrad=AMSGRAD)
 # optimizers: 'adadelta' | loss: 'mape', 'binary_crossentropy'
-stacked_autoencoder.compile(optimizer=OPTIMIZER, loss=LOSS, metrics=METRICS)
+model.compile(optimizer=OPTIMIZER, loss=LOSS, metrics=METRICS)
 
 tensorboard = TensorBoard(log_dir=FILE_PATH_TF_LOGS.format(time()))
 
-stacked_autoencoder.fit(x_train, x_train, epochs=EPOCHS, batch_size=BATCH_SIZE,
-						verbose=VERBOSE, callbacks=[tensorboard])
+# model.summary()
+
+model.fit(x_train, y_train, epochs=EPOCHS, batch_size=BATCH_SIZE,
+						verbose=VERBOSE, callbacks=[tensorboard], validation_data=(x_test, y_test))
 
 # ***************************************     Post Training     ***************************************
 if EVALUATE:
-	score, accuracy = stacked_autoencoder.evaluate(x_test, x_test)
+	score, accuracy = model.evaluate(y_test, y_test)
 	print('Test score:', score)
 	print('Test accuracy:', accuracy)
 
 if PREDICT:
-	reconstructed = stacked_autoencoder.predict(x_test)
+	reconstructed = model.predict(x_test)
 
 	# Show a number of predictions
 	for i in range(NUMBER_SHOWN_OF_PREDICTIONS):
@@ -235,6 +242,6 @@ if PREDICT:
 		print('')
 
 		# Print actual label
-		print('Actual data: {}'.format(x_test[rand_i]))
-		print('Reconstructed data: {}'.format(reconstructed[rand_i]))
+		print('Actual closing price: {}'.format(y_test[0, rand_i]))
+		print('Predicted closing price: {}'.format(reconstructed[0, rand_i]))
 
