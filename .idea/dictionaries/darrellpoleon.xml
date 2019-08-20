@@ -7,16 +7,19 @@
       <w>autocoder</w>
       <w>autoencoder</w>
       <w>crossentropy</w>
+      <w>dtype</w>
       <w>eurusd</w>
       <w>forex</w>
       <w>gbpusd</w>
       <w>intraday</w>
       <w>logdir</w>
+      <w>lookback</w>
       <w>lstm</w>
       <w>mape</w>
       <w>mnist</w>
       <w>relu</w>
       <w>scaler</w>
+      <w>temporalize</w>
       <w>tensorboard</w>
       <w>tensorflow</w>
       <w>uqbaf</w>
