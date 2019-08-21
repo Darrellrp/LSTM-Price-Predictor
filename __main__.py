@@ -5,24 +5,26 @@ import csv
 import os.path
 from time import time
 import numpy as np
-import tensorflow as tf
+from collections import deque
 import pandas as pd
 import matplotlib.pyplot as plt
 from keras import optimizers
-from keras.layers import Dense, Input, LSTM, TimeDistributed, Dropout, Flatten, CuDNNLSTM
+from keras.layers import Dense, LSTM, TimeDistributed, Dropout, BatchNormalization, CuDNNLSTM
 from keras.models import Sequential, Model
-from keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard, ModelCheckpoint
+from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.foreignexchange import ForeignExchange
+from functions import preprocess_df
 
 # Data Source
 AV_API_KEY = 'OHL1UQBAF94QK9FH'
 DIR_RAW_DATA = 'data/alpha-vantage/raw'
 DIR_CLEAN_DATA = 'data/alpha-vantage/clean'
 FILE_PATH_RAW_DATA = DIR_RAW_DATA + '/{}_daily_full.csv'
-FILE_PATH_CLEAN_DATA = DIR_CLEAN_DATA + '/{}_daily_full_{}.csv'
+FILE_PATH_CLEAN_DATA = DIR_CLEAN_DATA + '/cleaned_{}_daily_full_{}.csv'
 FETCH_COLLECTION = False
 D_TYPE = {
 	# 'timestamp': 'str',
@@ -31,29 +33,28 @@ D_TYPE = {
 	'low': 'float32',
 	'close': 'float32',
 	'volume': 'float32'
-	# 'volume': 'int64'
 }
 
 # Pre processing
-TRAIN_TEST_SPLIT = 0.99
+TEST_SIZE_PCT = 0.05
 SAMPLE_SIZE = None
 LOOKBACK = 10
 
 # LSTM
-LSTM_HIDDEN_SIZE = 10
+LSTM_HIDDEN_SIZE = 50
 LSTM_CODE_SIZE = 100
 
 # Training
-EPOCHS = 100
-BATCH_SIZE = 32
+EPOCHS = 20
+BATCH_SIZE = 64
 VERBOSE = 1
 
 # Optimization Neural Network
-LEARNING_RATE = 0.05
+LEARNING_RATE = 0.001
 BETA_1 = 0.9
 BETA_2 = 0.999
 EPSILON = None
-DECAY = 0.0
+DECAY = 1e-6
 AMSGRAD = False
 
 # Compilation Neural Network
@@ -62,8 +63,8 @@ LOSS = 'mean_squared_error'
 # OPTIMIZER = 'adam'
 OPTIMIZER = optimizers.Adam(lr=LEARNING_RATE, beta_1=BETA_1, beta_2=BETA_2, epsilon=EPSILON, decay=DECAY,
 							amsgrad=AMSGRAD)
-# METRICS = ['accuracy']
-METRICS = []
+METRICS = ['accuracy']
+# METRICS = []
 
 # Tensorflow
 FILE_PATH_TF_LOGS = 'logs/{}'
@@ -73,54 +74,6 @@ EVALUATE = False
 PREDICT = True
 NUMBER_SHOWN_OF_PREDICTIONS = 4
 SHOW = False
-
-
-# Functions
-def temporalize(_data, target, lookback):
-	output_x = {}
-	output_y = {}
-
-	for i in range(len(_data) - lookback - 1):
-		# t = np.empty(shape=(_lookback, data.shape[1]))
-		# t = None
-		t = data.iloc[i:i+lookback, :]
-		# for j in range(1, lookback+1):
-			# Gather past records up to the lookback period
-			# t = data.iloc[i + j + 1].to_frame() if t is None else t.append(data.iloc[i + j + 1])
-		output_x[i] = t
-		output_y[i] = target.iloc[i+lookback].to_frame()
-
-	df = pd.DataFrame.from_dict(output_x, orient='index')
-	tg = pd.DataFrame.from_dict(output_y, orient='index')
-	plzz = df.iloc[0].to_frame()
-	return df, tg
-
-
-def preprocess_df(_market_item_name, _market_item):
-	print('Pre-processing {}...'.format(_market_item_name))
-	print('')
-
-	# TODO: use shift
-	_market_item_data = _market_item.drop(_market_item.tail(1).index)
-	_market_item_targets = _market_item['close'].drop(_market_item.head(1).index).to_frame()
-	# market_item_data_without_timestamps = _market_item_data.drop(columns=['timestamp'])
-
-	_timestamps_data = _market_item_data.index.values
-	_timestamps_targets = market_item_targets.index.values
-
-	# Normalize financial data
-	_scaler = MinMaxScaler(feature_range=(0, 1))
-	_scaler = _scaler.fit(_market_item_data)
-	_market_item_data = _scaler.transform(_market_item_data)
-	_market_item_data = pd.DataFrame(_market_item_data, columns=list(D_TYPE.keys()))
-
-	_market_item_data = _market_item_data.set_index(_timestamps_data)
-	_market_item_targets = _market_item_targets.set_index(_timestamps_targets)
-	_market_item_data.index.name = 'timestamp'
-	_market_item_targets.index.name = 'timestamp'
-
-	# Store cleaned financial data
-	return market_item_data, market_item_targets
 
 
 # Read market items from text file
@@ -200,22 +153,6 @@ if (not os.path.exists('{}/{}'.format(DIR_CLEAN_DATA, 'data_collection.csv'))
 		file_path_clean_data = FILE_PATH_CLEAN_DATA.format(market_item_name, 'data')
 		file_path_clean_targets = FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets')
 
-		# if cleaned data or targets doesn't exist, clean and store again
-		if not os.path.exists(file_path_clean_data) or not os.path.exists(file_path_clean_targets):
-			market_item_data, market_item_targets = preprocess_df(market_item_name, market_item)
-
-			# Store cleaned financial data
-			market_item_data.to_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'), header=True)
-			market_item_targets.to_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'), header=True)
-
-		else:
-			# Read cleaned financial data
-			print('Loading cleaned Daily Time Series -csv (Alpha Vantage) - {}...'.format(market_item_name))
-			market_item_data = pd.read_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'data'),
-										dtype=D_TYPE, parse_dates=['timestamp'], index_col='timestamp')
-			market_item_targets = pd.read_csv(FILE_PATH_CLEAN_DATA.format(market_item_name, 'targets'),
-											dtype=D_TYPE, parse_dates=['timestamp'], index_col='timestamp')
-
 		# Rename columns
 		rename_columns = {
 			'open': '{}_open'.format(market_item_name),
@@ -224,116 +161,94 @@ if (not os.path.exists('{}/{}'.format(DIR_CLEAN_DATA, 'data_collection.csv'))
 			'close': '{}_close'.format(market_item_name),
 			'volume': '{}_volume'.format(market_item_name)
 		}
-		market_item_data.rename(columns=rename_columns, inplace=True)
+		market_item.rename(columns=rename_columns, inplace=True)
 
 		if data is None:
-			data = market_item_data
+			data = market_item
 
 		else:
 			# TODO: join left nan values to first record
-			merge = data.merge(market_item_data, how='inner', left_index=True, right_index=True)
+			merge = data.merge(market_item, how='inner', left_index=True, right_index=True)
 			data = data if merge.empty else merge
 
-		if market_item_name is target_market_item:
-			targets = market_item_targets
+		# if market_item_name is target_market_item:
+		# 	targets = market_item_targets
 
-	data.to_csv('{}/{}_input_collection.csv'.format(DIR_CLEAN_DATA, target_market_item), header=True)
-
-else:
-	print('Loading Collection -csv (Alpha Vantage)...')
-	data = pd.read_csv('{}/{}_input_collection.csv}'.format(DIR_CLEAN_DATA, target_market_item), header=None)
-	targets = pd.read_csv('{}/{}_daily_full_targets.csv'.format(DIR_CLEAN_DATA, target_market_item), header=None)
+	# data.to_csv(f"{DIR_CLEAN_DATA}/cleaned_{target_market_item}_input_collection.csv", header=True)
+#
+# else:
+# 	print('Loading Collection -csv (Alpha Vantage)...')
+# 	data = pd.read_csv('{}/{}_input_collection.csv}'.format(DIR_CLEAN_DATA, target_market_item), header=None)
+# 	targets = pd.read_csv('{}/{}_daily_full_targets.csv'.format(DIR_CLEAN_DATA, target_market_item), header=None)
 
 print('')
 
-# Specify number of records
+# Specify number of records | None is all records
 if isinstance(SAMPLE_SIZE, int):
 	data = data[:SAMPLE_SIZE]
-	targets = targets[:SAMPLE_SIZE]
 
-print('Retrieved Daily Time Series -csv (Alpha Vantage) - {}'.format(market_items))
+# print('Retrieved Daily Time Series -csv (Alpha Vantage) - {}'.format(market_items))
 print('')
-
-index_list = list(data.index)
-targets = targets.loc[index_list]
 
 # Train Test Splits
 print('Generating Train Test split...')
-x_train, x_test, y_train, y_test = train_test_split(data, targets, test_size=0.2, shuffle=False)
+msk = np.random.rand(len(data)) >= TEST_SIZE_PCT
+
+train = data[msk]
+test = data[~msk]
+
+x_train, y_train = preprocess_df(train, target_name=target_market_item, lookback=LOOKBACK)
+x_test, y_test = preprocess_df(test, target_name=target_market_item, lookback=LOOKBACK)
 
 print('Number of rows train data: {}'.format(len(x_train)))
 print('Number of rows test data: {} '.format(len(x_test)))
 print('')
 
-input_dim = x_train.shape[1]
-
-
-# Reshape 2D to 3D (samples, rows, columns)
-def temporalize(_data, target, lookback):
-	output_x = {}
-	output_y = {}
-
-	for i in range(len(_data) - lookback - 1):
-		# t = np.empty(shape=(_lookback, data.shape[1]))
-		# t = None
-		t = data.iloc[i:i+lookback, :]
-		# for j in range(1, lookback+1):
-			# Gather past records up to the lookback period
-			# t = data.iloc[i + j + 1].to_frame() if t is None else t.append(data.iloc[i + j + 1])
-		output_x[i] = t
-		output_y[i] = target.iloc[i+lookback].to_frame()
-
-	df = pd.DataFrame.from_dict(output_x, orient='index')
-	tg = pd.DataFrame.from_dict(output_y, orient='index')
-	plzz = df.iloc[0].to_frame()
-	return df, tg
-
-
-X, y = temporalize(data=x_train, target=y_train, lookback=LOOKBACK)
-
-x_train = x_train.reshape(x_train.shape[0], 1, x_train.shape[1])
-x_test = x_test.reshape(x_test.shape[0], 1, x_test.shape[1])
-y_train = y_train.reshape(y_train.shape[0], 1, 1)
-y_test = y_test.reshape(y_test.shape[0], 1, 1)
-
-fwef = x_train.shape
+input_dim = x_train.shape[1:]
+print(x_train.shape)
 
 # ***************************************     Neural Network Architecture     ***************************************
 model = Sequential()
 
 # LSTM
-# model.add(LSTM(LSTM_HIDDEN_SIZE,  return_sequences=True, input_shape=(None, input_dim)))
-model.add(LSTM(LSTM_HIDDEN_SIZE,  return_sequences=True, input_shape=(None, input_dim)))
-model.add((Dropout(0.2)))
+model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim, return_sequences=True))
+model.add(Dropout(0.2))
+model.add(BatchNormalization())
 
-model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True))
+model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim, return_sequences=True))
 model.add((Dropout(0.2)))
+model.add(BatchNormalization())
 
-model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True))
+model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim, return_sequences=True))
 model.add((Dropout(0.2)))
+model.add(BatchNormalization())
 
-model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True))
-model.add((Dropout(0.2)))
+model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim, return_sequences=True))
+model.add(Dropout(0.2))
+model.add(BatchNormalization())
 
-model.add(LSTM(LSTM_HIDDEN_SIZE, return_sequences=True))
-model.add((Dropout(0.2)))
+model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim, return_sequences=True))
+model.add(Dropout(0.2))
+model.add(BatchNormalization())
 
 # model.add(LSTM(LsSTM_HIDDEN_SIZE, return_sequences=True))
-model.add(LSTM(input_dim, return_sequences=True))
-model.add((Dropout(0.2)))
+model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim))
+model.add(Dropout(0.2))
+model.add(BatchNormalization())
 
-model.add(TimeDistributed((Dense(1))))
+model.add(Dense(32, activation='relu'))
+model.add(Dropout(0.2))
+
+model.add(Dense(1, activation='relu'))
 
 # adam = optimizers.Adam(lr=LEARNING_RATE, beta_1=BETA_1, beta_2=BETA_2, epsilon=EPSILON, decay=DECAY, amsgrad=AMSGRAD)
 model.compile(optimizer=OPTIMIZER, loss=LOSS, metrics=METRICS)
 
-# tensorboard = TensorBoard(log_dir=FILE_PATH_TF_LOGS.format(time()))
-
-# model.summary()
-# actual_values = y_test.reshape(x_test.shape[0], -1)
+tensorboard = TensorBoard(log_dir=FILE_PATH_TF_LOGS.format(time()))
 
 # params callbacks=[tensorboard], validation_data=(x_test, y_test)
-model.fit(x_train, y_train, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=VERBOSE)
+model.fit(x_train, y_train, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=VERBOSE, validation_data=(x_test, y_test)
+		, callbacks=[tensorboard])
 
 # ***************************************     Post Training     ***************************************
 if EVALUATE:
@@ -342,9 +257,10 @@ if EVALUATE:
 	print('Test accuracy:', accuracy)
 
 if PREDICT:
-	actual_values = y_test.reshape(x_test.shape[0], -1)
-	predictions = model.predict(x_test).reshape(x_test.shape[0], -1)
-	print(predictions.shape)
+	actual_values = y_test
+	predictions = model.predict(x_test)
+	print(actual_values[:10])
+	print(predictions[:10])
 
 	# Show a number of predictions
 	for i in range(NUMBER_SHOWN_OF_PREDICTIONS):
@@ -360,8 +276,8 @@ if PREDICT:
 		print('Actual closing price: {}'.format(actual))
 		print('Predicted closing price: {}'.format(prediction))
 
-	plt.plot(actual_values)
-	plt.plot(predictions)
+	plt.plot(actual_values, color='green')
+	plt.plot(predictions, color='red')
 	plt.show()
 
 
