@@ -38,14 +38,14 @@ D_TYPE = {
 # Pre processing
 TEST_SIZE_PCT = 0.05
 SAMPLE_SIZE = None
-LOOKBACK = 10
+LOOKBACK = 30
 
 # LSTM
-LSTM_HIDDEN_SIZE = 50
+LSTM_HIDDEN_SIZE = 30
 LSTM_CODE_SIZE = 100
 
 # Training
-EPOCHS = 20
+EPOCHS = 50
 BATCH_SIZE = 64
 VERBOSE = 1
 
@@ -60,11 +60,10 @@ AMSGRAD = False
 # Compilation Neural Network
 LOSS = 'mean_squared_error'
 # LOSS = 'binary_crossentropy'
+METRICS = ['mse', 'mae', 'mape']
 # OPTIMIZER = 'adam'
 OPTIMIZER = optimizers.Adam(lr=LEARNING_RATE, beta_1=BETA_1, beta_2=BETA_2, epsilon=EPSILON, decay=DECAY,
 							amsgrad=AMSGRAD)
-METRICS = ['accuracy']
-# METRICS = []
 
 # Tensorflow
 FILE_PATH_TF_LOGS = 'logs/{}'
@@ -231,7 +230,10 @@ model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim, return_sequences=True))
 model.add(Dropout(0.2))
 model.add(BatchNormalization())
 
-# model.add(LSTM(LsSTM_HIDDEN_SIZE, return_sequences=True))
+model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim, return_sequences=True))
+model.add(Dropout(0.2))
+model.add(BatchNormalization())
+
 model.add(LSTM(LSTM_HIDDEN_SIZE, input_shape=input_dim))
 model.add(Dropout(0.2))
 model.add(BatchNormalization())
@@ -246,7 +248,11 @@ model.compile(optimizer=OPTIMIZER, loss=LOSS, metrics=METRICS)
 
 tensorboard = TensorBoard(log_dir=FILE_PATH_TF_LOGS.format(time()))
 
-# params callbacks=[tensorboard], validation_data=(x_test, y_test)
+# filepath = "RNN_Final-{epoch:02d}-{val_acc:.3f}"
+# checkpoint = ModelCheckpoint("models/{}.model".format(filepath, monitor='mse', verbose=1, save_best_only=True,
+#  mode='max'))
+
+# params callbacks=[tensorboard, checkpoint], validation_data=(x_test, y_test)
 model.fit(x_train, y_train, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=VERBOSE, validation_data=(x_test, y_test)
 		, callbacks=[tensorboard])
 
@@ -259,8 +265,6 @@ if EVALUATE:
 if PREDICT:
 	actual_values = y_test
 	predictions = model.predict(x_test)
-	print(actual_values[:10])
-	print(predictions[:10])
 
 	# Show a number of predictions
 	for i in range(NUMBER_SHOWN_OF_PREDICTIONS):

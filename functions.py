@@ -34,22 +34,32 @@ def preprocess_df(market_item, target_name, lookback):
 	market_item = market_item.astype('float32')
 
 	market_item['target'] = market_item['{}_close'.format(target_name)]
+	# timestamps = market_item.indices
+	market_item_targets = market_item['target'].values
+	market_item_data = market_item.drop(['target'], axis=1)
+	market_item_indices = market_item.index.values
+	market_item_columns = market_item.columns.values
+
+	scaler = MinMaxScaler(feature_range=(0, 1))
+	market_item_data = scaler.fit_transform(market_item_data.values)
+
+	norm_data = np.column_stack((market_item_data, market_item_targets))
 
 	# Normalize & scale financial data
-	for col in market_item:
-		if col is not 'target':
-			market_item[col] = market_item[col].pct_change()
-			market_item.dropna(inplace=True)
-			print('Column: {}'.format(col))
-			market_item[col] = preprocessing.scale(market_item[col].values)
-
-		market_item.dropna(inplace=True)
+	# for col in market_item:
+	# 	if col is not 'target':
+	# 		market_item[col] = market_item[col].pct_change()
+	# 		market_item.dropna(inplace=True)
+	# 		print('Column: {}'.format(col))
+	# 		market_item[col] = preprocessing.scale(market_item[col].values)
+	#
+	# 	market_item.dropna(inplace=True)
 
 	sequential_data = []
 	prev_days = deque(maxlen=lookback)
-	print(market_item.head())
+	print(norm_data[:5])
 
-	for i in market_item.values:
+	for i in norm_data:
 		prev_days.append([n for n in i[:-1]])
 		if len(prev_days) == lookback:
 			sequential_data.append([np.array(prev_days), i[-1]])
